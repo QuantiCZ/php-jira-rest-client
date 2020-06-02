@@ -355,4 +355,38 @@ class ProjectService extends \JiraRestApi\JiraClient
 
         return $ret;
     }
+
+    /**
+     * @param $projectIdOrKey
+     * @param $roleId
+     * @param $username
+     * @return bool|string
+     * @throws JiraException
+     *
+     * Status 404 - Returned if the actor could not be added to the project role
+     */
+    public function addActorUser($projectIdOrKey, $roleId, $username) {
+        $data = json_encode(["user" => [$username]]);
+
+        $ret = $this->exec($this->uri.'/'.$projectIdOrKey.'/role/'.$roleId, $data, "POST");
+
+        return $ret;
+    }
+
+    /**
+     * @param $projectIdOrKey
+     * @param $roleId
+     * @param $groupName
+     * @return bool|string
+     * @throws JiraException
+     *
+     * Status 404 - Returned if the actor could not be added to the project role
+     */
+    public function addActorGroup($projectIdOrKey, $roleId, $groupName) {
+        $data = json_encode(["group" => [$groupName]]);
+
+        $ret = $this->exec($this->uri.'/'.$projectIdOrKey.'/role/'.$roleId, $data, "POST");
+
+        return $ret;
+    }
 }
