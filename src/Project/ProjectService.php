@@ -311,6 +311,25 @@ class ProjectService extends \JiraRestApi\JiraClient
     }
 
     /**
+     * @param $project
+     * @param $sharedProjectId
+     * @return mixed
+     * @throws JiraException
+     */
+    public function createProjectWithSharedConfigurations($project, $sharedProjectId)
+    {
+	    $data = json_encode($project);
+
+	    $ret = $this->exec("/rest/project-templates/1.0/createshared/$sharedProjectId", $data, 'POST', null, true);
+
+	    $this->log->info('createProject Result='.$ret);
+
+	    return $this->json_mapper->map(
+		    json_decode($ret), new Project()
+	    );
+    }
+
+    /**
      * Updates a project.
      *
      * Only non null values sent in JSON will be updated in the project.
