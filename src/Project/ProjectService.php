@@ -318,15 +318,19 @@ class ProjectService extends \JiraRestApi\JiraClient
      */
     public function createProjectWithSharedConfigurations($project, $sharedProjectId)
     {
-	    $data = json_encode($project);
+        $data = json_encode($project);
 
-	    $ret = $this->exec("/rest/project-templates/1.0/createshared/$sharedProjectId", $data, 'POST', null, true);
+        $ret = $this->exec("/rest/project-templates/1.0/createshared/$sharedProjectId", $data, 'POST', null, true);
 
-	    $this->log->info('createProject Result='.$ret);
+        $this->log->info('createProject Result='.$ret);
 
-	    return $this->json_mapper->map(
-		    json_decode($ret), new Project()
-	    );
+        $retProject = json_decode($ret);
+
+        if ($project->name === $retProject->projectName && $project->key === $retProject->projectKey && $retProject->id) return null;
+
+        $res = $this->get($retProject->id);
+
+        return $res;
     }
 
     /**
@@ -384,7 +388,8 @@ class ProjectService extends \JiraRestApi\JiraClient
      *
      * Status 404 - Returned if the actor could not be added to the project role
      */
-    public function addActorUser($projectIdOrKey, $roleId, $username) {
+    public function addActorUser($projectIdOrKey, $roleId, $username)
+    {
         $data = json_encode(["user" => [$username]]);
 
         $ret = $this->exec($this->uri.'/'.$projectIdOrKey.'/role/'.$roleId, $data, "POST");
@@ -401,7 +406,8 @@ class ProjectService extends \JiraRestApi\JiraClient
      *
      * Status 404 - Returned if the actor could not be added to the project role
      */
-    public function addActorGroup($projectIdOrKey, $roleId, $groupName) {
+    public function addActorGroup($projectIdOrKey, $roleId, $groupName)
+    {
         $data = json_encode(["group" => [$groupName]]);
 
         $ret = $this->exec($this->uri.'/'.$projectIdOrKey.'/role/'.$roleId, $data, "POST");
@@ -419,7 +425,8 @@ class ProjectService extends \JiraRestApi\JiraClient
      * Status 204 - Returned if the actor was successfully removed from the project role.
      * Status 404 - Returned if the project or role is not found, the calling user does not have permission to view it or does not have permission to modify the actors in the project role.
      */
-     public function removeActorUser($projectIdOrKey, $roleId, $username) {
+     public function removeActorUser($projectIdOrKey, $roleId, $username)
+     {
         $ret = $this->exec($this->uri.'/'.$projectIdOrKey.'/role/'.$roleId.'?user='.$username, null, "DELETE");
 
         return $ret;
@@ -435,7 +442,8 @@ class ProjectService extends \JiraRestApi\JiraClient
      * Status 204 - Returned if the actor was successfully removed from the project role.
      * Status 404 - Returned if the project or role is not found, the calling user does not have permission to view it or does not have permission to modify the actors in the project role.
      */
-     public function removeActorGroup($projectIdOrKey, $roleId, $groupName) {
+     public function removeActorGroup($projectIdOrKey, $roleId, $groupName)
+     {
          $ret = $this->exec($this->uri.'/'.$projectIdOrKey.'/role/'.$roleId.'?group='.$groupName, null, "DELETE");
 
          return $ret;

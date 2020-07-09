@@ -189,18 +189,18 @@ class JiraClient
         return $haystack;
     }
 
-	/**
-	 * Execute REST request.
-	 *
-	 * @param string $context Rest API context (ex.:issue, search, etc..)
-	 * @param string $post_data
-	 * @param string $custom_request [PUT|DELETE]
-	 * @param string $cookieFile cookie file
-	 *
-	 * @param bool $url
-	 * @return string
-	 * @throws JiraException
-	 */
+    /**
+     * Execute REST request.
+     *
+     * @param string $context Rest API context (ex.:issue, search, etc..)
+     * @param string $post_data
+     * @param string $custom_request [PUT|DELETE]
+     * @param string $cookieFile cookie file
+     *
+     * @param bool $url
+     * @return string
+     * @throws JiraException
+     */
     public function exec($context, $post_data = null, $custom_request = null, $cookieFile = null, $url = false)
     {
         $url = $this->createUrlByContext($context, $url);
@@ -445,7 +445,7 @@ class JiraClient
         $host = $this->getConfiguration()->getJiraHost();
 
         if (!$url) return $host.$this->api_uri.'/'.preg_replace('/\//', '', $context, 1);
-		else return $host.'/'.preg_replace('/\//', '', $context, 1);
+        else return $host.'/'.preg_replace('/\//', '', $context, 1);
     }
 
     /**
