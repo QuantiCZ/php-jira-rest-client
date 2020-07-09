@@ -4,7 +4,7 @@
     "type": "library",
     "keywords": ["jira", "rest", "jira-php", "jira-rest"],
     "require": {
-        "php": "^7.1",
+        "php": "^7.3",
         "ext-curl": "*",
         "ext-json": "*",
         "netresearch/jsonmapper": "^2.0",

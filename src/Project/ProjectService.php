@@ -6,6 +6,7 @@ use JiraRestApi\Issue\IssueType;
 use JiraRestApi\Issue\Reporter;
 use JiraRestApi\Issue\Version;
 use JiraRestApi\JiraException;
+use JsonException;
 
 class ProjectService extends \JiraRestApi\JiraClient
 {
@@ -320,14 +321,23 @@ class ProjectService extends \JiraRestApi\JiraClient
     {
         $data = json_encode($project);
 
+        $this->log->info('createProject Input=key=' . $project->key . ',name=' . $project->name);
+
         $ret = $this->exec("/rest/project-templates/1.0/createshared/$sharedProjectId", $data, 'POST', null, true);
 
         $this->log->info('createProject Result='.$ret);
 
-        $retProject = json_decode($ret);
+        try {
+            $retProject = json_decode($ret, false, 512, JSON_THROW_ON_ERROR);
+            $this->log->info('createProject Result=key=' . $retProject->projectKey . ',name=' . $retProject->projectName . ',id=' . $retProject->projectId);
+        } catch (JsonException $ex) {
+            $this->log->error("createProject Error=" . $ex->getMessage());
+            throw new JiraException("createProject Error=" . $ex->getMessage());
+        }
 
-        if ($project->name === $retProject->projectName && $project->key === $retProject->projectKey && $retProject->projectId) {
-            throw new JiraException("Curl Error: Create project with shared configurations");
+        if ($project->name !== $retProject->projectName || $project->key !== $retProject->projectKey || is_numeric($retProject->projectId) === false) {
+            $this->log->error("createProject Error=Input and result is not same");
+            throw new JiraException("'createProject Error=Input and result is not same'");
         }
 
         $res = $this->get($retProject->projectId);
