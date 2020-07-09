@@ -326,9 +326,11 @@ class ProjectService extends \JiraRestApi\JiraClient
 
         $retProject = json_decode($ret);
 
-        if ($project->name === $retProject->projectName && $project->key === $retProject->projectKey && $retProject->id) return null;
+        if ($project->name === $retProject->projectName && $project->key === $retProject->projectKey && $retProject->projectId) {
+            throw new JiraException("Curl Error: Create project with shared configurations");
+        }
 
-        $res = $this->get($retProject->id);
+        $res = $this->get($retProject->projectId);
 
         return $res;
     }
