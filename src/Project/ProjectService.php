@@ -311,12 +311,12 @@ class ProjectService extends \JiraRestApi\JiraClient
         );
     }
 
-	/**
-	 * @param $project
-	 * @param $sharedProjectId
-	 * @return mixed
-	 * @throws JiraException
-	 */
+    /**
+     * @param $project
+     * @param $sharedProjectId
+     * @return mixed
+     * @throws JiraException
+     */
     public function createProjectWithSharedConfigurations($project, $sharedProjectId)
     {
         $data = json_encode($project);
@@ -335,7 +335,9 @@ class ProjectService extends \JiraRestApi\JiraClient
             throw new JiraException("createProject Error=" . $ex->getMessage());
         }
 
-        return $retProject;
+        $res = $this->get($retProject->projectId);
+
+        return $res;
     }
 
     /**
