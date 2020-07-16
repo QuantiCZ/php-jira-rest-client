@@ -28,7 +28,7 @@ class GroupsService extends \JiraRestApi\JiraClient
         $this->log->info("Result=\n".$ret);
 
         $groups = $this->json_mapper->mapArray(
-            json_decode($ret, true)['groups'],
+            json_decode($ret, false)->groups,
             new \ArrayObject(),
             '\JiraRestApi\Groups\GroupsResult'
         );
